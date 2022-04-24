@@ -1,12 +1,6 @@
-const express = require('express')
-const app = express()
-const port = 5000
+const { config } = require('./config')
+const app = require('./app')
 
-
-app.get('/', function(req, res) {
-  res.send("hello express")
-})
-
-app.listen(port, () => {
-  console.log(`app running in port http://localhost:${port}/`)
+app.listen(config.port, () => {
+  console.log(`app running in port http://localhost:${config.port}/`)
 })
