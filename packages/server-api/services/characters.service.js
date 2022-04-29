@@ -1,4 +1,3 @@
-/* eslint-disable no-useless-catch */
 const API_URL = 'https://rickandmortyapi.com/api'
 const { getData } = require('../lib/fetch.lib.js')
 const getRandomArbitrary = require('../utils/getRandomArbitrary.js')
@@ -11,7 +10,7 @@ async function getCharacters (queries) {
 
     const response = await getData(`${API_URL}/character?${status}${gender}${name}`)
 
-    return response.data
+    return response.data.results
   } catch (error) {
     throw error
   }
