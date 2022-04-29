@@ -12,12 +12,20 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+  "jest": {
+    "clearMocks": true,
+    "modulePaths": ["<rootDir>/"]
+  },
   "dependencies": {
     "axios": "^0.26.1",
+    "bcrypt": "^5.0.1",
     "body-parser": "^1.20.0",
     "dotenv": "^16.0.0",
     "express": "^4.17.3",
-    "mongoose": "^6.3.0"
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.3.0",
+    "passport": "^0.5.2",
+    "passport-jwt": "^4.0.0"
   },
   "devDependencies": {
     "babel-cli": "^6.26.0",

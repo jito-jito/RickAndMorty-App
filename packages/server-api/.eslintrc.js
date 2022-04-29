@@ -11,5 +11,8 @@ module.exports = {
     ecmaVersion: 'latest'
   },
   rules: {
+    'no-undef': 'off',
+    'no-throw-literal': 'off',
+    'no-useless-catch': 'off'
   }
 }

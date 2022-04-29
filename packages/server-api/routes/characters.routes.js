@@ -11,8 +11,9 @@ charactersRouter.get('/', async function (req, res, next) {
     const queries = req.query
     const data = await getCharacters(queries)
 
-    res.status(200)
-    res.send(data)
+    res.statusResponse = 200
+    res.dataResponse = data
+    next()
   } catch (error) {
     next(error)
   }
@@ -22,16 +23,37 @@ charactersRouter.get('/random', async function (req, res, next) {
   try {
     const data = await getRandomCharacters()
 
-    res.status(200)
-    res.send(data)
+    res.statusResponse = 200
+    res.dataResponse = data
+    next()
   } catch (error) {
     next(error)
   }
 })
 
+charactersRouter.use(function (req, res, next) {
+  res.status(res.statusResponse)
+  res.send({
+    status: 'success',
+    results: res.dataResponse
+  })
+})
+
 charactersRouter.use(function (err, req, res, next) {
-  res.status(err.status)
-  res.send(err.statusText)
+  switch (err) {
+    case 'user has no favorites added':
+      res.status(201)
+      res.send('user has no favorites added')
+      break
+
+    default:
+      res.status(err.status)
+      res.send({
+        status: 'error',
+        statusText: err.statusText
+      })
+      break
+  }
 })
 
 module.exports = charactersRouter
