@@ -6,6 +6,8 @@ module.exports = {
     "eslint:recommended"
   ],
   "env": {
-    "vue/setup-compiler-macros": true
+    "vue/setup-compiler-macros": true,
+    "vue/multi-word-component-names": false,
+    "vue/no-multiple-template-root": false
   }
 }

@@ -1,0 +1,17 @@
+$font-color: white;
+$header-height: 10vh;
+$main-height: 85vh;
+$footer-height: 5vh;
+$bg-color:rgba(0, 0, 0, 0.5);
+$card-color: rgb(54, 54, 54);
+
+
+@mixin display-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@function opacity($color, $opacity) {
+  @return rgba($color, $opacity)
+}
