@@ -38,7 +38,8 @@ async function signIn (userData) {
 
 async function addUser (userData) {
   try {
-    const hasSavedUser = await getUser(userData.userName)
+    const hasSavedUser = await getUser(userData.userName, userData.email)
+
     if (hasSavedUser) {
       throw 'user already created'
     }

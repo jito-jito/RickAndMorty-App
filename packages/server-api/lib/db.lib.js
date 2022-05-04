@@ -15,8 +15,8 @@ async function inicialiceDb () {
   await mongoose.connect(`mongodb+srv://${config.dbUser}:${config.dbUserPassword}@cluster0.ya8wy.mongodb.net/${config.dbName}?retryWrites=true&w=majority`)
 }
 
-async function getUser (userName, emailOrPassword) {
-  const userInDb = await Users.findOne({ userName, emailOrPassword }, 'userName email favorites password')
+async function getUser (userName, email) {
+  const userInDb = await Users.findOne({ $or: [{ userName: userName }, { email: email }] }, 'userName email favorites password')
 
   return userInDb
 }
