@@ -4,31 +4,32 @@
       <div class="image-container col-4">
         <img :src="character.image" class="img-fluid rounded-start" alt="">
       </div>
-      <div class="col-6">
+      <div class="col-7">
         <div class="card-body py-2">
           <h5 class="card-title">{{character.name}}</h5>
           <h6 class="card-subtitle mb-2">{{character.status}} - {{character.species}} - {{character.gender}}</h6>
           <div class="card-content container">
-            <p>origin: {{character.origin.name}}</p>
-            <p>found in episode: 1</p>
+            <p>Origin: {{character.origin.name}}</p>
+            <p>Found in episode: {{characterEpisode}}</p>
           </div>
         </div>
       </div>
-      <div class="col-2 d-flex align-items-center">
-        <div class="checkbox">
+      <div class="col-1  d-flex align-items-center">
+        <div 
+          class="checkbox" 
+          @click.stop="setFavorite(id)"
+          :data-characterId="checkboxId">
           <input 
-          type="checkbox" 
-          class="btn-check" 
-          :id="checkboxId" 
-          autocomplete="off"
-          checked 
+            class="d-none" 
+            type="checkbox" 
+             
+            :id="checkboxId" 
+            aria-label="..."
           >
-          <label 
-            class="btn btn-primary" 
-            :for="checkboxId">Add</label>
-          <!-- <IconStar
-            :style="{'fill': color}"
-          /> -->
+          <IconStar
+            
+            :style="{'fill': state.color}"
+          />
         </div>
       </div>
     </div>
@@ -38,41 +39,105 @@
 
 <script>
 import IconStar from '@/components/icons/IconStar.vue'
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.min.js";
-import { Popover } from 'bootstrap/dist/js/bootstrap.esm.min.js'
-import { reactive, computed, toRef, toRefs, onMounted } from 'vue'
+import { reactive, computed, toRefs, onMounted } from 'vue'
+import { useUserStore } from '@/stores/userStore.js'
+import axios from 'axios'
+import { getCookie, createCookie } from '@/utils/auth/cookie'
 
 
 export default {
   props: ['character', 'id'],
+  components: {
+    IconStar
+  },
   setup(props) {
     const { character, id }= toRefs(props)
-
+    const userStore = useUserStore()
     const state = reactive({
       isFavorite: false,
-      color: 'yellow'
+      color: 'black'
     })
 
-    function toggleFavorites(e) {
-      console.log(e)
-      state.isFavorite = !state.isFavorite
-      state.color = state.color === 'black' ? 'yellow' : 'black'
+
+    async function setFavorite(id) {
+      try {
+        if(userStore.userName) {
+          let newFavorites = []
+          if(state.isFavorite) {
+            newFavorites = userStore.favorites.filter(favoriteId => favoriteId !== id)
+            state.isFavorite = false
+            state.color = 'black'
+          } else {
+            newFavorites = [...userStore.favorites, id]
+            state.isFavorite = true
+            state.color = 'yellow'
+          }
+
+          const response = await axios({
+            method: 'post',
+            url: `${import.meta.env.VITE_API_URL}/users/favorites`,
+            data: {
+              favorites: newFavorites
+            },
+            headers: {
+              'Authorization': `Bearer ${getCookie('cookie').token}` 
+            }
+          })
+          
+          const currentCookie = getCookie('cookie')
+          createCookie('cookie', {
+            token: currentCookie.token,
+            favorites: response.data.data.favorites
+          })
+          userStore.favorites = response.data.data.favorites
+          
+
+          // console.log(response.data.data.favorites)
+        }
+      } catch (error) {
+        if(error.response.status === 401) {
+          deleteCookie('cookie')
+          router.go('/')
+        }
+      }
+     
     }
 
     const checkboxId = computed(() => {
       return `btn-check-${id.value}`
     })
 
-    // onMounted(function () {
-    //   //inti Popover
-    //   Array.from(document.querySelectorAll(`button[data-bs-toggle="popover"]`))
-    // .forEach(popoverNode => new Popover(popoverNode))
-    // }) 
+    const characterEpisode = computed(() => {
+      const url = character.value.episode[0]
+      let episode = ''
+
+      for (let char = url.length - 1; char > 0; char--) {
+        if(url[char] === '/') {
+          break
+        }
+        episode = url[char] + episode
+      }
+
+      return episode
+    })
+
+    onMounted(function () {
+      if(userStore.userName) {
+        let isFavorite = userStore.favorites.some(favoriteId => favoriteId === id.value)
+        if(isFavorite) {
+          state.isFavorite = true
+          state.color = 'yellow'
+        }
+      }
+    }) 
 
     return {
       character,
-      checkboxId
+      characterEpisode,
+      checkboxId,
+      id,
+      state,
+      setFavorite
     }
   }
 }
@@ -107,9 +172,12 @@ export default {
   }
 
   .checkbox {
-    // input {
-    //   display: none;
-    // }
+    position: relative;
+    right: 5px;
+
+    &:hover {
+      cursor: pointer;
+    }
   }
 
 </style>

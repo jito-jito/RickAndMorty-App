@@ -34,3 +34,10 @@ function onChangeOption(e) {
     </template>
   </select>
 </template>
+
+<style lang="scss" scoped>
+  select:focus {
+    border-color: #343941;
+    box-shadow: 0 0 0 0.25rem #293139;
+  }
+</style>

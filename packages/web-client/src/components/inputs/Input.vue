@@ -1,27 +1,46 @@
-<script setup>
-import { reactive } from "@vue/reactivity"
-
-const props = defineProps(['type', 'title', 'modelValue'])
-defineEmits(['update:modelValue'])
-
-
-console.log(props)
-</script>
-
 <template>
   <div>
     <label 
       for="Input" 
       class="form-label">
-      {{ props.title }}
+      {{ title }}
     </label>
     <input 
       :value="modelValue"
-      @input="$emit('update:modelValue', $event.target.value)"
-      type="{{ props.type }}"
-      class="form-control" 
-      id="Input" 
+      @input="onChangeValue"
+      :type="type"
+      class="input form-control"  
       aria-describedby="emailHelp"
     >
   </div>
 </template>
+
+<script>
+import { toRefs } from "vue"
+
+export default {
+  props: ['type', 'title', 'modelValue'],
+  emits: ['update:modelValue'],
+  setup(props, ctx) {
+    const { type, title, modelValue } = toRefs(props)
+
+
+    function onChangeValue(event) {
+      ctx.emit('update:modelValue', event.target.value)
+    }
+    return {
+      type, 
+      title, 
+      modelValue,
+      onChangeValue
+    }
+  }
+}
+</script>
+
+<style lang="scss" scoped>
+  input:focus {
+    border-color: #343941;
+    box-shadow: 0 0 0 0.25rem #293139;
+  }
+</style>

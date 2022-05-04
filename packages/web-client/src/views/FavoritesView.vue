@@ -1,11 +1,7 @@
 <template>
   <Layout>
-    <h1>Rick y Morty Search</h1>
-    <h2>find your favorite characters</h2>
-    <Search
-      @onSearchCharacters="searchCharacters"
-
-    />
+    <h1>Hello {{userStore.userName}}</h1>
+    <h3>see your favorite characters</h3>
     <div class="results mt-4">
       <div 
         v-show="characters.loading"
@@ -20,12 +16,15 @@
         v-if="characters.data.length > 0 ? true : false"
       >
         <div class="characters-container">
-          <CharacterItem
-            v-for="character in characters.data"
-            :key="character.id"
-            :id="character.id"
-            :character="character"
-          />
+          <template v-for="character in characters.data">
+            <CharacterItem
+              v-if="isFavorite(character.id)"
+              :key="character.id"
+              :id="character.id"
+                :character="character"
+           />
+          </template>
+        
         </div>
       </template>
     </div>
@@ -34,65 +33,67 @@
 
 <script>
 import Layout from '@/containers/Layout.vue'
-import Search from '@/components/Search.vue'
 import CharacterItem from '@/components/CharacterItem.vue'
+import { useUserStore } from '../stores/userStore'
+import { getCookie, deleteCookie } from '@/utils/auth/cookie'
 import { reactive, onBeforeMount } from 'vue'
-import { getData } from '@/utils/getData'
-
+import { useRouter } from 'vue-router'
+import axios from 'axios'
+import { storeToRefs } from 'pinia'
 
 export default {
   components: {
     Layout,
-    Search,
     CharacterItem
   },
   setup() {
-    
+    const router = useRouter()
+    const userStore = useUserStore()
     const characters = reactive({
         loading: false,
         error: false,
         data: []
     })
+    const { favorites } = storeToRefs(userStore)
+
+    function isFavorite(id) {
+      return favorites.value.some(favoriteId => favoriteId === id)
+    }
 
     onBeforeMount(async function() {
       try {
         characters.loading = true
-        const response = await getData(`${import.meta.env.VITE_API_URL}/characters/random`)
+        const response = await await axios({
+            method: 'get',
+            url: `${import.meta.env.VITE_API_URL}/users/favorites`,
+            headers: {
+              'Authorization': `Bearer ${getCookie('cookie').token}` 
+            }
+          })
         characters.loading = false
-        characters.data = response
+        characters.data = response.data.data
 
       } catch (error) {
+        if(!userStore.hasUser) {
+          router.push('/')
+        }
+        if(error.response?.status === 401) {
+          deleteCookie('cookie')
+          router.go('/')
+        }
+     
         characters.loading = false
         characters.error = true
       }
     })
-
-    async function searchCharacters(event) {
-      try {
-        characters.data = []
-
-        const nameQuery = event.value.length > 2 ? `name=${event.value}&` : ''
-        const genderQuery = event.genderOption.length > 0 ? `gender=${event.genderOption}&` : ''
-        const statusQuery =  event.statusOption.length > 0 ? `status=${event.statusOption}&` : ''
-
-        characters.loading = true
-
-        const response = await getData(`${import.meta.env.VITE_API_URL}/characters?${nameQuery}${genderQuery}${statusQuery}`)
-
-        characters.loading = false
-        characters.data = response
-      } catch (error) {
-        characters.loading = false
-        characters.error = true
-      }
-    }
-
+    
     return {
+      userStore,
       characters,
-      searchCharacters
+      favorites,
+      isFavorite
     }
   }
-
 }
 </script>
 
@@ -101,14 +102,14 @@ export default {
 
   .results {
     @include display-flex-center;
-    height: 50vh;
+    height: 60vh;
   }
 
   .characters-container {
     display: grid;
     grid-auto-rows: max-content;
     grid-gap: 20px;
-    height: 50vh;
+    height: 60vh;
     overflow-y: scroll;
 
     & > div {

@@ -1,12 +1,5 @@
 <script setup>
 import Menu from '@/components/Menu.vue'
-import { useUserStore } from '@/stores/user'
-
-const user = useUserStore()
-
-console.log(user.userCredentials)
-
-
 
 </script>
 
@@ -15,7 +8,9 @@ console.log(user.userCredentials)
     <div class="container">
       <nav class="navbar navbar-light">
       <div class="container-fluid">
-        <a class="navbar-brand" href="#">Rick&Morty APP</a>
+        <RouterLink class="nav-link navbar-brand" to="/">
+          Rick&Morty APP 
+        </RouterLink>
         <Menu/>
       </div>
       </nav>
@@ -36,7 +31,7 @@ console.log(user.userCredentials)
     color: $font-color;
 
     &:hover {
-      color: inherit;
+      color:  opacity($font-color, .8);
     }
   }
 

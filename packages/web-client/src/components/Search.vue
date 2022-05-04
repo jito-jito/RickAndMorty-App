@@ -4,7 +4,7 @@
       <input 
         v-model="search.value"
         type="text" 
-        class="form-control" 
+        class="input form-control" 
         placeholder="Recipient's username" 
         aria-label="Recipient's username" 
         aria-describedby="button-addon2"
@@ -40,7 +40,7 @@
 
 <script>
 import SelectButton from '@/components/buttons/SelectButton.vue'
-import { ref, reactive } from 'vue'
+import { reactive } from 'vue'
 
 export default {
   components: {
@@ -49,7 +49,7 @@ export default {
   emits: ['onSearchCharacters'],
   setup(props, ctx) {
     const search = reactive({
-      value: 'morty',
+      value: '',
       genderOption: '',
       statusOption: ''
     })
@@ -82,6 +82,11 @@ export default {
 
 <style lang="scss" scoped>
   @import '@/assets/styles/Variables.scss';
+  
+  .input:focus {
+      border-color: #343941;
+      box-shadow: 0 0 0 0.25rem #293139;
+  }
 
   .container {
     width: 80%;
