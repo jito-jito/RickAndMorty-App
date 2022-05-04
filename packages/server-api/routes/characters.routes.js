@@ -33,7 +33,7 @@ charactersRouter.get('/random', async function (req, res, next) {
 
 charactersRouter.use(function (req, res, next) {
   res.status(res.statusResponse)
-  res.send({
+  res.json({
     status: 'success',
     results: res.dataResponse
   })
@@ -42,7 +42,7 @@ charactersRouter.use(function (req, res, next) {
 charactersRouter.use(function (err, req, res, next) {
   switch (err) {
     case 'user has no favorites added':
-      res.status(201)
+      res.status(400)
       res.send('user has no favorites added')
       break
 

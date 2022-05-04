@@ -15,7 +15,7 @@ usersRouter.post('/login', async function (req, res, next) {
     const userToken = await signIn(userData)
 
     if (userToken === null) {
-      res.status(201)
+      res.status(400)
       res.send({
         status: 'error',
         statusText: 'unexisting user in app'
