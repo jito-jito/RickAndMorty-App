@@ -16,7 +16,7 @@ export default {
   components: {
     RouterView
   },
-  setup(props) {
+  setup() {
     const userStore = useUserStore()
     const { cookies } = useCookies()
 

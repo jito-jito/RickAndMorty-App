@@ -10,7 +10,7 @@ function createCookie(name, data) {
   cookies.set(name, data)
 }
 
-function deleteCookie(name, data) {
+function deleteCookie(name) {
   cookies.remove(name)
 }
 

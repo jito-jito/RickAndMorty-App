@@ -69,7 +69,7 @@ export default {
     const route = useRoute()
     const userStore = useUserStore()
 
-    function signOut(e) {
+    function signOut() {
       deleteCookie('cookie')
       router.go('/')
     }

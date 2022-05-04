@@ -58,7 +58,7 @@ import Button from '@/components/buttons/Button.vue'
 import axios from 'axios'
 import { reactive } from '@vue/reactivity'
 import { useUserStore } from '../stores/userStore'
-import { useRouter, useRoute } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useCookies } from "vue3-cookies"
 import decodeJwt from '@/utils/auth/decodeJwt'
 
@@ -67,7 +67,7 @@ export default {
   Input,
   Button
   },
-  setup(props) {
+  setup() {
     const router = useRouter()
     const { cookies } = useCookies()
 

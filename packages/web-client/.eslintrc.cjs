@@ -7,7 +7,11 @@ module.exports = {
   ],
   "env": {
     "vue/setup-compiler-macros": true,
-    "vue/multi-word-component-names": false,
-    "vue/no-multiple-template-root": false
+  },
+  "rules": {
+    "vue/multi-word-component-names": 'off',
+    "vue/no-multiple-template-root": 'off',
+    "vue/no-dupe-keys": 'off',
+    "no-useless-catch": 'off'
   }
 }

@@ -42,8 +42,8 @@ import IconStar from '@/components/icons/IconStar.vue'
 import { reactive, computed, toRefs, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userStore.js'
 import axios from 'axios'
-import { getCookie, createCookie } from '@/utils/auth/cookie'
-
+import { getCookie, createCookie, deleteCookie } from '@/utils/auth/cookie'
+import { useRouter } from 'vue-router'
 
 export default {
   props: ['character', 'id'],
@@ -51,6 +51,7 @@ export default {
     IconStar
   },
   setup(props) {
+    const router = useRouter()
     const { character, id }= toRefs(props)
     const userStore = useUserStore()
     const state = reactive({
@@ -91,8 +92,6 @@ export default {
           })
           userStore.favorites = response.data.data.favorites
           
-
-          // console.log(response.data.data.favorites)
         }
       } catch (error) {
         if(error.response.status === 401) {
