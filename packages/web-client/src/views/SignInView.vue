@@ -97,6 +97,9 @@ export default {
           data: {
             userName: userData.name,
             password: userData.password
+          },
+          headers: {
+            'Access-Control-Allow-Origin': `${import.meta.env.VITE_APP_URL}`
           }
         })
         
