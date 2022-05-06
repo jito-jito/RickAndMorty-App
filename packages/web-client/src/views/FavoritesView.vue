@@ -67,7 +67,8 @@ export default {
             method: 'get',
             url: `${import.meta.env.VITE_API_URL}/users/favorites`,
             headers: {
-              'Authorization': `Bearer ${getCookie('cookie').token}` 
+              'Authorization': `Bearer ${getCookie('cookie').token}`,
+              'Access-Control-Allow-Origin': `${import.meta.env.VITE_APP_URL}`
             }
           })
         characters.loading = false
